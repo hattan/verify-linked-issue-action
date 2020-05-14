@@ -1,0 +1,65 @@
+# This workflow will inspect a pull request to ensure there is a linked issue or a
+# valid issue is mentioned in the body. If neither is present it fails the check and adds
+# a comment alerting users of this missing requirement.
+
+name: VerifyIssue
+on: [pull_request]
+
+jobs:
+  verify-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@0.9.0
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            let isLinked=false;
+            let invalidIssue=false;
+            let body = context.payload.pull_request.body;
+            const re = /#(.*?)[\s]/g;
+            const matches = body.match(re);
+            if(matches){
+              matches.forEach(match => {
+               var issueId = match.replace('#','').trim();
+               let issue = github.issues.get({
+                 owner: context.repo.owner,
+                 repo: context.repo.repo,
+                 issue_number: issueId,
+                });
+               if(issue){
+                 isLinked = true;
+                 invalidIssue=true;
+               }
+              });
+            }
+            if(!isLinked){
+              let pull = await github.issues.listEvents({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number 
+              });
+              if(pull.data){
+                pull.data.forEach(item => {
+                  if (item.event == "connected"){
+                    isLinked = true;
+                  }
+                });
+              }
+            }
+            if(isLinked){
+              console.log("Success! Linked Issue Found!");
+            }
+            else{
+              console.log("No Linked Issue Found!");
+              core.setFailed("No Linked Issue Found!");
+              let msg = invalidIssue ? 'Error! Issue found in body, but it is not a valid issue!': 'Error! No Linked Issue found. Please link an issue or mention it in the body using #<issue_id>'
+              await github.issues.createComment({
+                issue_number: context.payload.pull_request.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: 'Build Error! No Linked Issue found. Please link an issue or mention it in the body using #<issue_id>'
+              })  
+            }
+
+
+
