@@ -101,7 +101,7 @@ async function createMissingIssueComment(context,github, log, tools ) {
   if(!messageBody){
     let filename = core.getInput('filename');
     if(!filename){
-      filename = '.github/W';
+      filename = '.github/VERIFY_PR_COMMENT_TEMPLATE.md';
     }
     const file = tools.getFile(filename);
     if(file){
