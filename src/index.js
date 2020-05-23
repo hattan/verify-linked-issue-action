@@ -40,7 +40,7 @@ async function verifyLinkedIssue(tools) {
       log.success("Success! Linked Issue Found!");
   }
   else{
-      createMissingIssueComment(context, github, log);
+      await createMissingIssueComment(context, github, log);
       log.error("No Linked Issue Found!");
       core.setFailed("No Linked Issue Found!");
       tools.exit.failure() 
