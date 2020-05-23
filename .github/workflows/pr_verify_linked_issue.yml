@@ -18,7 +18,23 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          filename: 'example/templates/fail_comment.txt'
+          message: |
+          _nnnn_                      
+          dGGGGMMb     ,"""""""""""""""".
+         @p~qp~~qMb    | Issue Missing! |
+         M|@||@) M|   _;................'
+         @,----.JM| -'
+        JS^\__/  qKL
+       dZP        qKRb
+      dZP          qKKb
+     fZP            SMMb
+     HZM            MMMM
+     FqM            MMMM
+   __| ".        |\dS"qML
+   |    `.       | `' \Zq
+  _)      \.___.,|     .'
+  \____   )MMMMMM|   .'
+       `-'       `--' hjm
       
 
     
