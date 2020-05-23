@@ -18,7 +18,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          message: "This is a default message via input"
+          message: "This is a default message via input. It should supercede file!"
+          filename: 'example/templates/fail_comment.txt'
       
 
     
