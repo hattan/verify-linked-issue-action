@@ -47,7 +47,7 @@ async function verifyLinkedIssue(tools) {
   }
 }
 
-async function checkBodyForValidIssue(context, github, log){
+async function checkBodyForValidIssue(context, github, log, tools){
   let body = context.payload.pull_request.body;
   log.debug(`Checking PR Body: "${body}"`)
   const re = /#(.*?)[\s]/g;
@@ -96,7 +96,7 @@ async function checkEventsListForConnectedEvent(context, github, log){
   return false;
 }
 
-async function createMissingIssueComment(context,github, log ) {
+async function createMissingIssueComment(context,github, log, tools ) {
   let messageBody = core.getInput('message');
   if(!messageBody){
     let filename = core.getInput('filename');
