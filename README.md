@@ -8,7 +8,7 @@ On a PR that does not include a linked issue or reference to an issue in the bod
 ## Installation
 
 ### As a part of an existing workflow
-``` 
+``` yaml
 - name: Verify Linked Issue
   uses: hattan/verify-linked-issue-action@v1
   env:
@@ -16,7 +16,7 @@ On a PR that does not include a linked issue or reference to an issue in the bod
 ```
 
 Pleasure ensure the following types on the pull_request triggers:
-```
+```yaml
   pull_request:
     types: [edited, synchronize, opened, reopened]
 ```
@@ -31,7 +31,7 @@ Pleasure ensure the following types on the pull_request triggers:
 
 You can customize this message by providing an optional 'message' input with the string you would like to include as the comment.
 
-```
+```yaml
 - name: Verify Linked Issue
   uses: hattan/verify-linked-issue-action@v1
   env:
@@ -39,6 +39,23 @@ You can customize this message by providing an optional 'message' input with the
   with:
     message: 'Error! This is a custom error'
  ```
+
+### File Templates
+If you want a more complex message, consider using a static template file. (Support for dynamic templates will be coming soon!)
+
+There are two options when using template files:
+
+* Option 1) Default File Path: Add a file to .github called VERIFY_PR_COMMENT_TEMPLATE.md. The content of this file will be used as the fail comment in the PR.
+* Option 2) Speciy a filename input with the path to a template file. 
+```yaml
+- name: Verify Linked Issue
+  uses: ./ 
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  with:
+    filename: 'example/templates/fail_comment.txt'
+```
+
 ## Trying it out
 
 * Create a new pull request and take care to not include a linked item or mention an issue.
