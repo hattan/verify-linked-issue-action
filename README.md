@@ -68,4 +68,6 @@ There are two options when using template files:
 
 * The Issue reference by # needs to be in the body, we don't currently look in the title. That is a future enhancement.
 
+v1
+
 
