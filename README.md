@@ -25,6 +25,20 @@ Pleasure ensure the following types on the pull_request triggers:
 * Ensure you have the folder .github/workflow
 * In .github/workflow, place the [pr_verify_linked_issue.yml](example/pr_verify_linked_issue.yml) workflow.
 
+### Inputs
+(Optional) The action will add the following text to a PR when verification fails.
+'Build Error! No Linked Issue found. Please link an issue or mention it in the body using #<issue_id>'
+
+You can customize this message by providing an optional 'message' input with the string you would like to include as the comment.
+
+```
+- name: Verify Linked Issue
+  uses: hattan/verify-linked-issue-action@v1
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  with:
+    message: 'Error! This is a custom error'
+ ```
 ## Trying it out
 
 * Create a new pull request and take care to not include a linked item or mention an issue.
