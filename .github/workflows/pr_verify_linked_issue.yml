@@ -10,10 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     name: PR has a linked issue.
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Verify Linked Issue
-        uses: hattan/verify-linked-issue-action@v1
+        uses: ./ 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          message: 'Error ! Please include a reference to an issue.'
       
 
     

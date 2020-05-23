@@ -40,7 +40,7 @@ async function verifyLinkedIssue(tools) {
       log.success("Success! Linked Issue Found!");
   }
   else{
-      createMissingIssueComment(context,github);
+      await createMissingIssueComment(context, github, log);
       log.error("No Linked Issue Found!");
       core.setFailed("No Linked Issue Found!");
       tools.exit.failure() 
@@ -96,12 +96,14 @@ async function checkEventsListForConnectedEvent(context, github, log){
   return false;
 }
 
-async function createMissingIssueComment(context,github) {
+async function createMissingIssueComment(context,github, log ) {
+  const messageBody = core.getInput('message') || 'Build Error! No Linked Issue found. Please link an issue or mention it in the body using #<issue_id>';
+  log.debug(`Adding comment to PR. Comment text: ${messageBody}`);
   await github.issues.createComment({
     issue_number: context.payload.pull_request.number,
     owner: context.repo.owner,
     repo: context.repo.repo,
-    body: 'Build Error! No Linked Issue found. Please link an issue or mention it in the body using #<issue_id>'
+    body: messageBody
   });
 }
 
