@@ -1,0 +1,8 @@
+name: 'Verify Linked Issue'
+description: 'A GitHub action that verifies a pull request contains a reference to an issue.'
+inputs:
+  filename:
+      description: The name of the file to use as the comment template for pull requests with no linked issues.
+runs:
+  using: 'node12'
+  main: 'src/index.js'
