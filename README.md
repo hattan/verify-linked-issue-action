@@ -23,7 +23,7 @@ Pleasure ensure the following types on the pull_request triggers:
 
 ### As a separate workflow
 * Ensure you have the folder .github/workflow
-* In .github/workflow place the [/.github/workflows/pr_verify_linked_issue.yml](example/pr_verify_linked_issue.yml) workflow.
+* In .github/workflow place the [pr_verify_linked_issue.yml](/.github/workflows/pr_verify_linked_issue.yml) workflow.
 
 ## Trying it out
 
