@@ -14,7 +14,7 @@ jobs:
     name: Ensure Pull Request has a linked issue.
     steps:
       - name: Verify Linked Issue
-        uses: hattan/verify-linked-issue-action@v1
+        uses: hattan/verify-linked-issue-action@v0.5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
