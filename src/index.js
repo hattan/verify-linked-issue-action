@@ -97,7 +97,21 @@ async function checkEventsListForConnectedEvent(context, github, log){
 }
 
 async function createMissingIssueComment(context,github, log ) {
+  let messageBody = core.getInput('message');
+  if(!messageBody){
+    let filename = core.getInput('filename');
+    if(!filename){
+      filename = '.github/VERIFY_PR_COMMENT_TEMPLATE.md';
+    }
+    const file = tools.getFile(filename);
+    if(file){
+      messageBody = file;
+    }
+  }
+
+  const templateFile = core.getInput('filename') || '.github/VERIFY_PR_COMMENT_TEMPLATE.md'
   const messageBody = core.getInput('message') || 'Build Error! No Linked Issue found. Please link an issue or mention it in the body using #<issue_id>';
+  
   log.debug(`Adding comment to PR. Comment text: ${messageBody}`);
   await github.issues.createComment({
     issue_number: context.payload.pull_request.number,

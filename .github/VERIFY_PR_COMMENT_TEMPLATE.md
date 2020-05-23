@@ -1,0 +1,1 @@
+This is an error from a default path template file.
