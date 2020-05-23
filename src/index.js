@@ -40,7 +40,7 @@ async function verifyLinkedIssue(tools) {
       log.success("Success! Linked Issue Found!");
   }
   else{
-      await createMissingIssueComment(context, github, log);
+      await createMissingIssueComment(context, github, log, tools);
       log.error("No Linked Issue Found!");
       core.setFailed("No Linked Issue Found!");
       tools.exit.failure() 
@@ -96,22 +96,28 @@ async function checkEventsListForConnectedEvent(context, github, log){
   return false;
 }
 
-async function createMissingIssueComment(context,github, log ) {
+async function createMissingIssueComment(context,github, log, tools ) {
+  const defaultMessage =  'Build Error! No Linked Issue found. Please link an issue or mention it in the body using #<issue_id>';
   let messageBody = core.getInput('message');
   if(!messageBody){
     let filename = core.getInput('filename');
     if(!filename){
       filename = '.github/VERIFY_PR_COMMENT_TEMPLATE.md';
     }
-    const file = tools.getFile(filename);
-    if(file){
-      messageBody = file;
+    try{
+      const file = tools.getFile(filename);
+      if(file){
+        messageBody = file;
+      }
+      else{
+        messageBody = defaultMessage;
+      }
+    }
+    catch{
+      messageBody = defaultMessage;
     }
   }
 
-  const templateFile = core.getInput('filename') || '.github/VERIFY_PR_COMMENT_TEMPLATE.md'
-  const messageBody = core.getInput('message') || 'Build Error! No Linked Issue found. Please link an issue or mention it in the body using #<issue_id>';
-  
   log.debug(`Adding comment to PR. Comment text: ${messageBody}`);
   await github.issues.createComment({
     issue_number: context.payload.pull_request.number,
