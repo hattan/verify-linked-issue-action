@@ -40,14 +40,14 @@ async function verifyLinkedIssue(tools) {
       log.success("Success! Linked Issue Found!");
   }
   else{
-      await createMissingIssueComment(context, github, log);
+      await createMissingIssueComment(context, github, log, tools);
       log.error("No Linked Issue Found!");
       core.setFailed("No Linked Issue Found!");
       tools.exit.failure() 
   }
 }
 
-async function checkBodyForValidIssue(context, github, log, tools){
+async function checkBodyForValidIssue(context, github, log){
   let body = context.payload.pull_request.body;
   log.debug(`Checking PR Body: "${body}"`)
   const re = /#(.*?)[\s]/g;
