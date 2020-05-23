@@ -10,7 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     name: PR has a linked issue.
     steps:
-      - uses: ./
+      - name: Verify Linked Issue
+        uses: ./ 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
