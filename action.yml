@@ -4,7 +4,7 @@ branding:
     icon: check-square
     color: green
 inputs:
-  error-message:
+  message:
     description: The text to use as the PR comen for when for pull requests with no linked issues.
   filename:
       description: The name of the file to use as the comment template for pull requests with no linked issues.
