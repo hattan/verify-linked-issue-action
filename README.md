@@ -22,8 +22,8 @@ Pleasure ensure the following types on the pull_request triggers:
 ```
 
 ### As a separate workflow
-* Ensure you have the folder .github/workflow
-* In .github/workflow, place the [pr_verify_linked_issue.yml](example/pr_verify_linked_issue.yml) workflow.
+* Ensure you have the folder .github/workflows
+* In .github/workflows, place the [pr_verify_linked_issue.yml](example/pr_verify_linked_issue.yml) workflow.
 
 ### Inputs
 (Optional) The action will add the following text to a PR when verification fails.
