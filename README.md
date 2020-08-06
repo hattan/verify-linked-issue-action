@@ -51,6 +51,7 @@ You can also provide an alternative ACCESS_TOKEN instead of the GITHUB_TOKEN, in
 - name: Verify Linked Issue
   uses: hattan/verify-linked-issue-action@v1.2.0
   env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     ACCESS_TOKEN: ${{ secrets.SECRET_NAME }}
   with:
     message: "Error! This is a custom error"
