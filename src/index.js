@@ -45,19 +45,21 @@ async function verifyLinkedIssue(tools) {
 async function checkBodyForValidIssue(context, github, log) {
   let body = context.payload.pull_request.body;
   log.debug(`Checking PR Body: "${body}"…`);
+  const matches = extractIssues(body);
 
-  for (match in extractIssues(body)) {
-    log.debug(`Regex matches: ${match}`);
+  for (i in matches) {
+    const match = matches[i];
+    log.debug(`Regex match: ${match}`);
 
     const issueNumber = match.issueNumber;
     const owner = match.owner || context.repo.owner;
     const repo = match.repo || context.repo.repo;
 
-    log.debug(`Verfiying match is a valid issue #${issueNumber}…`);
+    log.debug(`Verfiying #${issueNumber} is a valid issue…`);
     try {
       let issue = await getIssue(github, owner, repo, issueNumber);
       if (issue) {
-        log.debug(`Found issue #${issueNumber} in PR Body.`);
+        log.debug(`Found issue #${issueNumber} from PR Body.`);
 
         return checkIssue(issue.data, log);
       }
