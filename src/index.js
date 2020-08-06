@@ -49,7 +49,6 @@ async function checkBodyForValidIssue(context, github, log) {
 
   for (i in matches) {
     const match = matches[i];
-    log.debug(`Regex match: ${match}`);
 
     const issueNumber = match.issueNumber;
     const owner = match.owner || context.repo.owner;

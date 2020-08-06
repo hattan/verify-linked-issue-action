@@ -12,7 +12,7 @@ On a PR that does not include a linked issue or reference to an issue in the bod
 
 ```yaml
 - name: Verify Linked Issue
-  uses: hattan/verify-linked-issue-action@v1.2.0
+  uses: Fondeadora/verify-linked-issue-action@v1.2.1
   env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -38,7 +38,7 @@ You can customize this message by providing an optional 'message' input with the
 
 ```yaml
 - name: Verify Linked Issue
-  uses: hattan/verify-linked-issue-action@v1.2.0
+  uses: Fondeadora/verify-linked-issue-action@v1.2.1
   env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   with:
@@ -49,7 +49,7 @@ You can also provide an alternative ACCESS_TOKEN instead of the GITHUB_TOKEN, in
 
 ```yaml
 - name: Verify Linked Issue
-  uses: hattan/verify-linked-issue-action@v1.2.0
+  uses: Fondeadora/verify-linked-issue-action@v1.2.1
   env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     ACCESS_TOKEN: ${{ secrets.SECRET_NAME }}
@@ -68,7 +68,7 @@ There are two options when using template files:
 
 ```yaml
 - name: Verify Linked Issue
-  uses: hattan/verify-linked-issue-action@v1.2.0
+  uses: Fondeadora/verify-linked-issue-action@v1.2.1
   env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   with:

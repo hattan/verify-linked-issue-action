@@ -1,6 +1,6 @@
 {
   "name": "verify-linked-issue-action",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A GitHub action that verifies your pull request contains a reference to an issue.",
   "main": "index.js",
   "directories": {
