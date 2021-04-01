@@ -1,13 +1,15 @@
-name: 'Verify Linked Issue'
-description: 'A GitHub action that verifies a pull request contains a reference to an issue.'
+name: "Verify Linked Issue"
+description: "A GitHub action that verifies a pull request contains a reference to an issue."
 branding:
-    icon: check-square
-    color: green
+  icon: check-square
+  color: green
 inputs:
   message:
     description: The text to use as the PR comen for when for pull requests with no linked issues.
+    required: false
   filename:
-      description: The name of the file to use as the comment template for pull requests with no linked issues.
+    description: The name of the file to use as the comment template for pull requests with no linked issues.
+    required: false
 runs:
-  using: 'node12'
-  main: 'src/index.js'
+  using: "node12"
+  main: "src/index.js"

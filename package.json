@@ -1,13 +1,13 @@
 {
   "name": "verify-linked-issue-action",
-  "version": "1.0.0",
+  "version": "1.2.1",
   "description": "A GitHub action that verifies your pull request contains a reference to an issue.",
   "main": "index.js",
   "directories": {
     "example": "example"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "GITHUB_TOKEN='' node test/index.test.js"
   },
   "repository": {
     "type": "git",
@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/hattan/verify-linked-issue-action#readme",
   "dependencies": {
-    "@actions/core": "^1.2.4",
+    "@actions/core": "^1.2.6",
     "@actions/github": "^2.2.0",
     "actions-toolkit": "^4.0.0"
   }
