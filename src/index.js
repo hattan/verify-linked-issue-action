@@ -1,7 +1,8 @@
  
 const core = require('@actions/core')
 const { Toolkit } = require('actions-toolkit')
-
+const issueParser = require('issue-parser')
+const parse = issueParser('github');
 Toolkit.run(async tools => {
   try {
     if(!tools.context.payload.pull_request){
@@ -38,9 +39,16 @@ async function verifyLinkedIssue(tools) {
 
   if(linkedIssue){
       log.success("Success! Linked Issue Found!");
+      core.setOutput("has_linked_issues", "true");
   }
   else{
-      await createMissingIssueComment(context, github, log, tools);
+      const isQuiet = core.getInput('quiet') === 'true';
+      if (!isQuiet) {
+        await createMissingIssueComment(context, github, log, tools);
+      }else{
+        log.error("Quiet mode enabled, no comment added!");
+      }
+      core.setOutput("has_linked_issues", "false");
       log.error("No Linked Issue Found!");
       core.setFailed("No Linked Issue Found!");
       tools.exit.failure() 
@@ -50,22 +58,28 @@ async function verifyLinkedIssue(tools) {
 async function checkBodyForValidIssue(context, github, log){
   let body = context.payload.pull_request.body;
   log.debug(`Checking PR Body: "${body}"`)
-  const re = /#(.*?)[\s]/g;
-  const matches = body.match(re);
+  const matches = parse(body);
   log.debug(`regex matches: ${matches}`)
-  if(matches){
-    for(let i=0,len=matches.length;i<len;i++){
-      let match = matches[i];
-      let issueId = match.replace('#','').trim();
+  if(matches.refs){
+    for(let i=0,len=matches.refs.length;i<len;i++){
+      let match = matches.refs[i];
+      let issueId = match.issue;
+      let owner = context.repo.owner;
+      let repo = context.repo.repo;
+      if (match.slug) {
+        let slugParts = match.slug.split('/');
+        owner = slugParts[0];
+        repo = slugParts[1];
+      }
       log.debug(`verfiying match is a valid issue issueId: ${issueId}`)
       try{
         let issue = await github.issues.get({
-          owner: context.repo.owner,
-          repo: context.repo.repo,
+          owner: owner,
+          repo: repo,
           issue_number: issueId,
         });
         if(issue){
-          log.debug(`Found issue in PR Body ${issueId}`);
+          log.debug(`Found issue in PR Body ${match.raw}`);
           return true;
         }
       }
@@ -84,16 +98,18 @@ async function checkEventsListForConnectedEvent(context, github, log){
     issue_number: context.payload.pull_request.number 
   });
 
+  let hasConnectedEvents = false;
   if(pull.data){
     log.debug(`Checking events: ${pull.data}`)
     pull.data.forEach(item => {
+
       if (item.event == "connected"){
         log.debug(`Found connected event.`);
-        return true;
+        hasConnectedEvents = true;
       }
     });
   }
-  return false;
+  return hasConnectedEvents;
 }
 
 async function createMissingIssueComment(context,github, log, tools ) {
