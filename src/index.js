@@ -63,9 +63,9 @@ async function checkBodyForValidIssue(context, github, log){
   log.debug(`Checking PR Body: "${body}"`)
   const matches = parse(body);
   log.debug(`regex matches: ${matches}`)
-  if(matches.refs){
-    for(let i=0,len=matches.refs.length;i<len;i++){
-      let match = matches.refs[i];
+  if(matches.allRefs){
+    for(let i=0,len=matches.allRefs.length;i<len;i++){
+      let match = matches.allRefs[i];
       let issueId = match.issue;
       let owner = context.repo.owner;
       let repo = context.repo.repo;
