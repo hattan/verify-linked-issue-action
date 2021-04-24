@@ -33,6 +33,8 @@ async function verifyLinkedIssue(tools) {
 
   let linkedIssue = await checkBodyForValidIssue(context, github, log);
 
+  const isQuiet = core.getInput('quiet') === 'true';
+  const noComment = isQuiet ? isQuiet  ( core.getInput('no_comment') === 'true' );
   if (!linkedIssue) {
     linkedIssue = await checkEventsListForConnectedEvent(context, github, log);
   }
@@ -42,16 +44,17 @@ async function verifyLinkedIssue(tools) {
       core.setOutput("has_linked_issues", "true");
   }
   else{
-      const isQuiet = core.getInput('quiet') === 'true';
-      if (!isQuiet) {
+      if (!noComment) {
         await createMissingIssueComment(context, github, log, tools);
       }else{
-        log.error("Quiet mode enabled, no comment added!");
+        log.error("No comment mode enabled, no comment added!");
       }
       core.setOutput("has_linked_issues", "false");
       log.error("No Linked Issue Found!");
       core.setFailed("No Linked Issue Found!");
-      tools.exit.failure() 
+      if (isQuiet) {
+        tools.exit.failure()
+      }
   }
 }
 

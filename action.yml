@@ -7,6 +7,8 @@ inputs:
   message:
     description: The text to use as the PR comen for when for pull requests with no linked issues.
   quiet:
+    description: Prevent commenting and failing the action in case that no linked issues are found.
+  no_comment:
     description: Prevent commenting on the issue in case that no linked issues are found.
   filename:
     description: The name of the file to use as the comment template for pull requests with no linked issues.
