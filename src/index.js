@@ -51,8 +51,8 @@ async function verifyLinkedIssue(tools) {
       }
       core.setOutput("has_linked_issues", "false");
       log.error("No Linked Issue Found!");
-      core.setFailed("No Linked Issue Found!");
-      if (isQuiet) {
+      if ( ! isQuiet) {
+        core.setFailed("No Linked Issue Found!");
         tools.exit.failure()
       }
   }
