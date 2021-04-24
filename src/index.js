@@ -34,7 +34,7 @@ async function verifyLinkedIssue(tools) {
   let linkedIssue = await checkBodyForValidIssue(context, github, log);
 
   const isQuiet = core.getInput('quiet') === 'true';
-  const noComment = isQuiet ? isQuiet  ( core.getInput('no_comment') === 'true' );
+  const noComment = isQuiet ? isQuiet : ( core.getInput('no_comment') === 'true' );
   if (!linkedIssue) {
     linkedIssue = await checkEventsListForConnectedEvent(context, github, log);
   }
