@@ -1,47 +1,21 @@
  
 const core = require('@actions/core')
-const { Toolkit } = require('actions-toolkit')
+const github = require('@actions/github');
+const context = github.context;
 
-Toolkit.run(async tools => {
-  try {
-    if(!tools.context.payload.pull_request){
-        tools.log.warn('Not a pull request skipping verification!');
-        return;
-    }
 
-    tools.log.debug('Starting Linked Issue Verification!');
-    await verifyLinkedIssue(tools);
-    
-  } catch (err) {
-    tools.log.error(`Error verifying linked issue.`)
-    tools.log.error(err)
-
-    if (err.errors) tools.log.error(err.errors)
-    const errorMessage = "Error verifying linked issue."
-    core.setFailed(errorMessage + '\n\n' + err.message)
-    tools.exit.failure()
-  }
-}, {
-  secrets: ['GITHUB_TOKEN']
-});
-
-async function verifyLinkedIssue(tools) {
-  const context = tools.context,
-        github  = tools.github,
-        log     = tools.log;
-
+async function verifyLinkedIssue() {
   let linkedIssue = await checkBodyForValidIssue(context, github, log);
-
   if (!linkedIssue) {
     linkedIssue = await checkEventsListForConnectedEvent(context, github, log);
   }
 
   if(linkedIssue){
-      log.success("Success! Linked Issue Found!");
+    core.success("Success! Linked Issue Found!");
   }
   else{
       await createMissingIssueComment(context, github, log, tools);
-      log.error("No Linked Issue Found!");
+      core.error("No Linked Issue Found!");
       core.setFailed("No Linked Issue Found!");
       tools.exit.failure() 
   }
@@ -127,4 +101,27 @@ async function createMissingIssueComment(context,github, log, tools ) {
   });
 }
 
+async function run() {
 
+  try {
+    if(!tools.context.payload.pull_request){
+        tools.log.warn('Not a pull request skipping verification!');
+        return;
+    }
+
+    tools.log.debug('Starting Linked Issue Verification!');
+    await verifyLinkedIssue(tools);
+    
+  } catch (err) {
+    tools.log.error(`Error verifying linked issue.`)
+    tools.log.error(err)
+
+    if (err.errors) tools.log.error(err.errors)
+    const errorMessage = "Error verifying linked issue."
+    core.setFailed(errorMessage + '\n\n' + err.message)
+    tools.exit.failure()
+  }
+
+}
+
+run();
