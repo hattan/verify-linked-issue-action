@@ -14,10 +14,9 @@ async function verifyLinkedIssue() {
     core.success("Success! Linked Issue Found!");
   }
   else{
-      await createMissingIssueComment(context, github, log, tools);
+      await createMissingIssueComment(context, github, log);
       core.error("No Linked Issue Found!");
       core.setFailed("No Linked Issue Found!");
-      tools.exit.failure() 
   }
 }
 
@@ -70,7 +69,7 @@ async function checkEventsListForConnectedEvent(context, github, log){
   return false;
 }
 
-async function createMissingIssueComment(context,github, log, tools ) {
+async function createMissingIssueComment(context,github, log ) {
   const defaultMessage =  'Build Error! No Linked Issue found. Please link an issue or mention it in the body using #<issue_id>';
   let messageBody = core.getInput('message');
   if(!messageBody){
@@ -78,18 +77,19 @@ async function createMissingIssueComment(context,github, log, tools ) {
     if(!filename){
       filename = '.github/VERIFY_PR_COMMENT_TEMPLATE.md';
     }
-    try{
-      const file = tools.getFile(filename);
-      if(file){
-        messageBody = file;
-      }
-      else{
-        messageBody = defaultMessage;
-      }
-    }
-    catch{
-      messageBody = defaultMessage;
-    }
+    messageBody=defaultMessage;
+    // try{
+    //   const file = tools.getFile(filename);
+    //   if(file){
+    //     messageBody = file;
+    //   }
+    //   else{
+    //     messageBody = defaultMessage;
+    //   }
+    // }
+    // catch{
+    //   messageBody = defaultMessage;
+    // }
   }
 
   log.debug(`Adding comment to PR. Comment text: ${messageBody}`);
@@ -104,22 +104,21 @@ async function createMissingIssueComment(context,github, log, tools ) {
 async function run() {
 
   try {
-    if(!tools.context.payload.pull_request){
-        tools.log.warn('Not a pull request skipping verification!');
+    if(!context.payload.pull_request){
+        core.info('Not a pull request skipping verification!');
         return;
     }
 
-    tools.log.debug('Starting Linked Issue Verification!');
-    await verifyLinkedIssue(tools);
+    core.debug('Starting Linked Issue Verification!');
+    await verifyLinkedIssue();
     
   } catch (err) {
-    tools.log.error(`Error verifying linked issue.`)
-    tools.log.error(err)
+    core.error(`Error verifying linked issue.`)
+    core.error(err)
 
-    if (err.errors) tools.log.error(err.errors)
+    if (err.errors) core.error(err.errors)
     const errorMessage = "Error verifying linked issue."
     core.setFailed(errorMessage + '\n\n' + err.message)
-    tools.exit.failure()
   }
 
 }
