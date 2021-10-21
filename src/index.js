@@ -5,32 +5,32 @@ const context = github.context;
 
 
 async function verifyLinkedIssue() {
-  let linkedIssue = await checkBodyForValidIssue(context, github, log);
+  let linkedIssue = await checkBodyForValidIssue(context, github);
   if (!linkedIssue) {
-    linkedIssue = await checkEventsListForConnectedEvent(context, github, log);
+    linkedIssue = await checkEventsListForConnectedEvent(context, github);
   }
 
   if(linkedIssue){
     core.success("Success! Linked Issue Found!");
   }
   else{
-      await createMissingIssueComment(context, github, log);
+      await createMissingIssueComment(context, github);
       core.error("No Linked Issue Found!");
       core.setFailed("No Linked Issue Found!");
   }
 }
 
-async function checkBodyForValidIssue(context, github, log){
+async function checkBodyForValidIssue(context, github){
   let body = context.payload.pull_request.body;
-  log.debug(`Checking PR Body: "${body}"`)
+  core.debug(`Checking PR Body: "${body}"`)
   const re = /#(.*?)[\s]/g;
   const matches = body.match(re);
-  log.debug(`regex matches: ${matches}`)
+  core.debug(`regex matches: ${matches}`)
   if(matches){
     for(let i=0,len=matches.length;i<len;i++){
       let match = matches[i];
       let issueId = match.replace('#','').trim();
-      log.debug(`verfiying match is a valid issue issueId: ${issueId}`)
+      core.debug(`verfiying match is a valid issue issueId: ${issueId}`)
       try{
         let issue = await github.issues.get({
           owner: context.repo.owner,
@@ -38,19 +38,19 @@ async function checkBodyForValidIssue(context, github, log){
           issue_number: issueId,
         });
         if(issue){
-          log.debug(`Found issue in PR Body ${issueId}`);
+          core.debug(`Found issue in PR Body ${issueId}`);
           return true;
         }
       }
       catch{
-        log.debug(`#${issueId} is not a valid issue.`);
+        core.debug(`#${issueId} is not a valid issue.`);
       }
     }
   }
   return false;
 }
 
-async function checkEventsListForConnectedEvent(context, github, log){
+async function checkEventsListForConnectedEvent(context, github){
   let pull = await github.issues.listEvents({
     owner: context.repo.owner,
     repo: context.repo.repo,
@@ -58,10 +58,10 @@ async function checkEventsListForConnectedEvent(context, github, log){
   });
 
   if(pull.data){
-    log.debug(`Checking events: ${pull.data}`)
+    core.debug(`Checking events: ${pull.data}`)
     pull.data.forEach(item => {
       if (item.event == "connected"){
-        log.debug(`Found connected event.`);
+        core.debug(`Found connected event.`);
         return true;
       }
     });
@@ -69,7 +69,7 @@ async function checkEventsListForConnectedEvent(context, github, log){
   return false;
 }
 
-async function createMissingIssueComment(context,github, log ) {
+async function createMissingIssueComment(context,github ) {
   const defaultMessage =  'Build Error! No Linked Issue found. Please link an issue or mention it in the body using #<issue_id>';
   let messageBody = core.getInput('message');
   if(!messageBody){
@@ -92,7 +92,7 @@ async function createMissingIssueComment(context,github, log ) {
     // }
   }
 
-  log.debug(`Adding comment to PR. Comment text: ${messageBody}`);
+  core.debug(`Adding comment to PR. Comment text: ${messageBody}`);
   await github.issues.createComment({
     issue_number: context.payload.pull_request.number,
     owner: context.repo.owner,
