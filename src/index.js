@@ -29,6 +29,9 @@ async function verifyLinkedIssue() {
 
 async function checkBodyForValidIssue(context, github){
   let body = context.payload.pull_request.body;
+  if (!body){
+    return false;
+  }
   core.debug(`Checking PR Body: "${body}"`)
   const re = /#(.*?)[\s]/g;
   const matches = body.match(re);
