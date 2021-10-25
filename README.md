@@ -10,7 +10,7 @@ On a PR that does not include a linked issue or reference to an issue in the bod
 ### As a part of an existing workflow
 ``` yaml
 - name: Verify Linked Issue
-  uses: hattan/verify-linked-issue-action@v1.1.1
+  uses: hattan/verify-linked-issue-action@v1.1.5
   env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
