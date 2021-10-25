@@ -2,7 +2,9 @@
 const core = require('@actions/core')
 const github = require('@actions/github');
 const context = github.context;
-
+const token = process.env.GITHUB_TOKEN;
+const octokit = github.getOctokit(token);
+const fs = require('fs')
 
 async function verifyLinkedIssue() {
   let linkedIssue = await checkBodyForValidIssue(context, github);
@@ -11,7 +13,7 @@ async function verifyLinkedIssue() {
   }
 
   if(linkedIssue){
-    core.success("Success! Linked Issue Found!");
+    core.notice("Success! Linked Issue Found!");
   }
   else{
       await createMissingIssueComment(context, github);
@@ -22,6 +24,9 @@ async function verifyLinkedIssue() {
 
 async function checkBodyForValidIssue(context, github){
   let body = context.payload.pull_request.body;
+  if (!body){
+    return false;
+  }
   core.debug(`Checking PR Body: "${body}"`)
   const re = /#(.*?)[\s]/g;
   const matches = body.match(re);
@@ -30,9 +35,9 @@ async function checkBodyForValidIssue(context, github){
     for(let i=0,len=matches.length;i<len;i++){
       let match = matches[i];
       let issueId = match.replace('#','').trim();
-      core.debug(`verfiying match is a valid issue issueId: ${issueId}`)
+      core.debug(`verifying match is a valid issue issueId: ${issueId}`)
       try{
-        let issue = await github.issues.get({
+        let issue = await  octokit.rest.issues.get({
           owner: context.repo.owner,
           repo: context.repo.repo,
           issue_number: issueId,
@@ -51,14 +56,14 @@ async function checkBodyForValidIssue(context, github){
 }
 
 async function checkEventsListForConnectedEvent(context, github){
-  let pull = await github.issues.listEvents({
+  const payload = JSON.stringify(github.context.payload, undefined, 2)
+  let pull = await octokit.rest.issues.listEvents({
     owner: context.repo.owner,
     repo: context.repo.repo,
     issue_number: context.payload.pull_request.number 
   });
 
   if(pull.data){
-    core.debug(`Checking events: ${pull.data}`)
     pull.data.forEach(item => {
       if (item.event == "connected"){
         core.debug(`Found connected event.`);
@@ -78,22 +83,22 @@ async function createMissingIssueComment(context,github ) {
       filename = '.github/VERIFY_PR_COMMENT_TEMPLATE.md';
     }
     messageBody=defaultMessage;
-    // try{
-    //   const file = tools.getFile(filename);
-    //   if(file){
-    //     messageBody = file;
-    //   }
-    //   else{
-    //     messageBody = defaultMessage;
-    //   }
-    // }
-    // catch{
-    //   messageBody = defaultMessage;
-    // }
+    try{
+      const file = fs.readFileSync(filename, 'utf8')
+      if(file){
+        messageBody = file;
+      }
+      else{
+        messageBody = defaultMessage;
+      }
+    }
+    catch{
+      messageBody = defaultMessage;
+    }
   }
 
   core.debug(`Adding comment to PR. Comment text: ${messageBody}`);
-  await github.issues.createComment({
+  await octokit.rest.issues.createComment({
     issue_number: context.payload.pull_request.number,
     owner: context.repo.owner,
     repo: context.repo.repo,
