@@ -2,12 +2,19 @@
 const core = require('@actions/core')
 const github = require('@actions/github');
 const context = github.context;
-
+const token = core.getInput('token');
+const octokit = github.getOctokit(token);
+const fs = require('fs')
 
 async function verifyLinkedIssue() {
+  core.info("starting checkBodyForValidIssue")
   let linkedIssue = await checkBodyForValidIssue(context, github);
+
+  core.info("completed checkBodyForValidIssue" + linkedIssue)
   if (!linkedIssue) {
+    core.info("completed checkEventsListForConnectedEvent")
     linkedIssue = await checkEventsListForConnectedEvent(context, github);
+    core.info("completed checkEventsListForConnectedEvent" + linkedIssue)
   }
 
   if(linkedIssue){
@@ -51,7 +58,10 @@ async function checkBodyForValidIssue(context, github){
 }
 
 async function checkEventsListForConnectedEvent(context, github){
-  let pull = await github.issues.listEvents({
+  const payload = JSON.stringify(github.context.payload, undefined, 2)
+  console.log(`The event payload: ${payload}`);
+
+  let pull = await octokit.rest.issues.listEvents({
     owner: context.repo.owner,
     repo: context.repo.repo,
     issue_number: context.payload.pull_request.number 
@@ -78,22 +88,22 @@ async function createMissingIssueComment(context,github ) {
       filename = '.github/VERIFY_PR_COMMENT_TEMPLATE.md';
     }
     messageBody=defaultMessage;
-    // try{
-    //   const file = tools.getFile(filename);
-    //   if(file){
-    //     messageBody = file;
-    //   }
-    //   else{
-    //     messageBody = defaultMessage;
-    //   }
-    // }
-    // catch{
-    //   messageBody = defaultMessage;
-    // }
+    try{
+      const file = fs.readFileSync(filename, 'utf8')
+      if(file){
+        messageBody = file;
+      }
+      else{
+        messageBody = defaultMessage;
+      }
+    }
+    catch{
+      messageBody = defaultMessage;
+    }
   }
 
   core.debug(`Adding comment to PR. Comment text: ${messageBody}`);
-  await github.issues.createComment({
+  await octokit.rest.issues.createComment({
     issue_number: context.payload.pull_request.number,
     owner: context.repo.owner,
     repo: context.repo.repo,
