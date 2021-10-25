@@ -7,14 +7,9 @@ const octokit = github.getOctokit(token);
 const fs = require('fs')
 
 async function verifyLinkedIssue() {
-  core.info("starting checkBodyForValidIssue")
   let linkedIssue = await checkBodyForValidIssue(context, github);
-
-  core.info("completed checkBodyForValidIssue" + linkedIssue)
   if (!linkedIssue) {
-    core.info("completed checkEventsListForConnectedEvent")
     linkedIssue = await checkEventsListForConnectedEvent(context, github);
-    core.info("completed checkEventsListForConnectedEvent" + linkedIssue)
   }
 
   if(linkedIssue){
@@ -40,7 +35,7 @@ async function checkBodyForValidIssue(context, github){
     for(let i=0,len=matches.length;i<len;i++){
       let match = matches[i];
       let issueId = match.replace('#','').trim();
-      core.debug(`verfiying match is a valid issue issueId: ${issueId}`)
+      core.debug(`verifying match is a valid issue issueId: ${issueId}`)
       try{
         let issue = await github.issues.get({
           owner: context.repo.owner,
@@ -62,8 +57,6 @@ async function checkBodyForValidIssue(context, github){
 
 async function checkEventsListForConnectedEvent(context, github){
   const payload = JSON.stringify(github.context.payload, undefined, 2)
-  console.log(`The event payload: ${payload}`);
-
   let pull = await octokit.rest.issues.listEvents({
     owner: context.repo.owner,
     repo: context.repo.repo,
@@ -71,7 +64,6 @@ async function checkEventsListForConnectedEvent(context, github){
   });
 
   if(pull.data){
-    core.debug(`Checking events: ${pull.data}`)
     pull.data.forEach(item => {
       if (item.event == "connected"){
         core.debug(`Found connected event.`);
