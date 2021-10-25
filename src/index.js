@@ -13,7 +13,7 @@ async function verifyLinkedIssue() {
   }
 
   if(linkedIssue){
-    core.success("Success! Linked Issue Found!");
+    core.notice("Success! Linked Issue Found!");
   }
   else{
       await createMissingIssueComment(context, github);
@@ -37,7 +37,7 @@ async function checkBodyForValidIssue(context, github){
       let issueId = match.replace('#','').trim();
       core.debug(`verifying match is a valid issue issueId: ${issueId}`)
       try{
-        let issue = await github.issues.get({
+        let issue = await  octokit.rest.issues.get({
           owner: context.repo.owner,
           repo: context.repo.repo,
           issue_number: issueId,
