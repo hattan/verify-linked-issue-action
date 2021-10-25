@@ -1,28 +1,24 @@
 {
-  "name": "verify-linked-issue-action",
+  "name": "actionsandbox",
   "version": "1.0.0",
-  "description": "A GitHub action that verifies your pull request contains a reference to an issue.",
+  "description": "",
   "main": "index.js",
-  "directories": {
-    "example": "example"
-  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hattan/verify-linked-issue-action.git"
+    "url": "git+https://github.com/hattan/actionsandbox.git"
   },
   "keywords": [],
-  "author": "Hattan Shobokshi",
+  "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/hattan/verify-linked-issue-action/issues"
+    "url": "https://github.com/hattan/actionsandbox/issues"
   },
-  "homepage": "https://github.com/hattan/verify-linked-issue-action#readme",
+  "homepage": "https://github.com/hattan/actionsandbox#readme",
   "dependencies": {
     "@actions/core": "^1.6.0",
-    "@actions/github": "^2.2.0",
-    "actions-toolkit": "^4.0.0"
+    "@actions/github": "^5.0.0"
   }
 }
