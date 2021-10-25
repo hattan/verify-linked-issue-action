@@ -33,7 +33,7 @@ You can customize this message by providing an optional 'message' input with the
 
 ```yaml
 - name: Verify Linked Issue
-  uses: hattan/verify-linked-issue-action@v1.1.1
+  uses: hattan/verify-linked-issue-action@v1.1.5
   env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   with:
@@ -49,7 +49,7 @@ There are two options when using template files:
 * Option 2) Speciy a filename input with the path to a template file. 
 ```yaml
 - name: Verify Linked Issue
-  uses: hattan/verify-linked-issue-action@v1.1.1
+  uses: hattan/verify-linked-issue-action@v1.1.5
   env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   with:
