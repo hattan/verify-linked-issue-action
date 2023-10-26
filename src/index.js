@@ -1,4 +1,4 @@
- 
+
 const core = require('@actions/core')
 const github = require('@actions/github');
 const context = github.context;
@@ -28,29 +28,27 @@ async function checkBodyForValidIssue(context, github){
     return false;
   }
   core.debug(`Checking PR Body: "${body}"`)
-  const re = /#(.*?)[\s]/g;
+  const re = /\B#\d+\b/g;
   const matches = body.match(re);
   core.debug(`regex matches: ${matches}`)
   if(matches){
-    for(let i=0,len=matches.length;i<len;i++){
-      let match = matches[i];
+    return matches.some((match) => {
       let issueId = match.replace('#','').trim();
       core.debug(`verifying match is a valid issue issueId: ${issueId}`)
-      try{
-        let issue = await  octokit.rest.issues.get({
-          owner: context.repo.owner,
-          repo: context.repo.repo,
-          issue_number: issueId,
-        });
+      octokit.rest.issues.get({
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        issue_number: issueId,
+      }).then((issue) => {
         if(issue){
           core.debug(`Found issue in PR Body ${issueId}`);
           return true;
         }
-      }
-      catch{
+        return false;
+      }).catch(() => {
         core.debug(`#${issueId} is not a valid issue.`);
-      }
-    }
+      });
+    })
   }
   return false;
 }
@@ -60,7 +58,7 @@ async function checkEventsListForConnectedEvent(context, github){
   let pull = await octokit.rest.issues.listEvents({
     owner: context.repo.owner,
     repo: context.repo.repo,
-    issue_number: context.payload.pull_request.number 
+    issue_number: context.payload.pull_request.number
   });
 
   if(pull.data){
@@ -116,7 +114,7 @@ async function run() {
 
     core.debug('Starting Linked Issue Verification!');
     await verifyLinkedIssue();
-    
+
   } catch (err) {
     core.error(`Error verifying linked issue.`)
     core.error(err)

@@ -1,5 +1,5 @@
 # Verify Linked Issue Action
-A GitHub action that verifies your pull request contains a reference to an issue. 
+A GitHub action that verifies your pull request contains a reference to an issue.
 
 On a PR that does not include a linked issue or reference to an issue in the body, the check should fail and a comment will be added to the PR.
 
@@ -46,7 +46,7 @@ If you want a more complex message, consider using a static template file. (Supp
 There are two options when using template files:
 
 * Option 1) Default File Path: Add a file to .github called VERIFY_PR_COMMENT_TEMPLATE.md. The content of this file will be used as the fail comment in the PR.
-* Option 2) Speciy a filename input with the path to a template file. 
+* Option 2) Speciy a filename input with the path to a template file.
 ```yaml
 - name: Verify Linked Issue
   uses: hattan/verify-linked-issue-action@v1.1.5
@@ -64,10 +64,6 @@ There are two options when using template files:
 
 ![Failed Build log](images/failed1.png "Failed Build log")
 ## Known Issues
-* There must be a space after the issue number (ie "#12 " not "#12".) This is due to the way the RegEx is structured and will be resolved in a future release.
-
 * The Issue reference by # needs to be in the body, we don't currently look in the title. That is a future enhancement.
 
 v1
-
-
