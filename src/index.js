@@ -30,6 +30,7 @@ async function checkBodyForValidIssue(context, github){
   core.debug(`Checking PR Body: "${body}"`)
   const re = /\B#\d+\b/g;
   const matches = body.match(re);
+  console.log('matches', matches)
   core.debug(`regex matches: ${matches}`)
   if(matches){
     return matches.some((match) => {
@@ -41,9 +42,11 @@ async function checkBodyForValidIssue(context, github){
         issue_number: issueId,
       }).then((issue) => {
         if(issue){
+          console.log('issue found!', issue)
           core.debug(`Found issue in PR Body ${issueId}`);
           return true;
         }
+        console.log('issue not found!')
         return false;
       }).catch(() => {
         core.debug(`#${issueId} is not a valid issue.`);
