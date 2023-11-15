@@ -22,6 +22,21 @@ async function verifyLinkedIssue() {
   }
 }
 
+async function checkGithubForGithubIssue(owner, repo, issueId) {
+  try{
+    const response = await octokit.rest.issues.get({
+      owner: owner,
+      repo: repo,
+      issue_number: issueId,
+    });
+
+    return Boolean(response);
+  } catch {
+    core.debug(`#${issueId} is not a valid issue.`);
+    return false;
+  }
+}
+
 async function checkBodyForValidIssue(context, github){
   let body = context.payload.pull_request.body;
   if (!body){
@@ -30,28 +45,13 @@ async function checkBodyForValidIssue(context, github){
   core.debug(`Checking PR Body: "${body}"`)
   const re = /\B#\d+\b/g;
   const matches = body.match(re);
-  console.log('matches', matches)
   core.debug(`regex matches: ${matches}`)
   if(matches){
     return matches.some((match) => {
       let issueId = match.replace('#','').trim();
       core.debug(`verifying match is a valid issue issueId: ${issueId}`)
-      octokit.rest.issues.get({
-        owner: context.repo.owner,
-        repo: context.repo.repo,
-        issue_number: issueId,
-      }).then((issue) => {
-        if(issue){
-          console.log('issue found!', issue)
-          core.debug(`Found issue in PR Body ${issueId}`);
-          return true;
-        }
-        console.log('issue not found!')
-        return false;
-      }).catch(() => {
-        core.debug(`#${issueId} is not a valid issue.`);
-      });
-    })
+      return checkGithubForGithubIssue(context.repo.owner, context.repo.repo, issueId);
+    });
   }
   return false;
 }
