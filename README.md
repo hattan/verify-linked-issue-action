@@ -46,7 +46,7 @@ If you want a more complex message, consider using a static template file. (Supp
 There are two options when using template files:
 
 * Option 1) Default File Path: Add a file to .github called VERIFY_PR_COMMENT_TEMPLATE.md. The content of this file will be used as the fail comment in the PR.
-* Option 2) Speciy a filename input with the path to a template file. 
+* Option 2) Specify a filename input with the path to a template file. 
 ```yaml
 - name: Verify Linked Issue
   uses: hattan/verify-linked-issue-action@v1.1.5
