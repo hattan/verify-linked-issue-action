@@ -22,6 +22,6 @@
   "homepage": "https://github.com/hattan/verify-linked-issue-action#readme",
   "dependencies": {
     "@actions/core": "^1.9.1",
-    "@actions/github": "^5.0.0"
+    "@actions/github": "^6.0.0"
   }
 }
